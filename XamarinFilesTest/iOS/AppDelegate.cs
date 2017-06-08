@@ -1,22 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using MvvmCross.Core.ViewModels;
+using MvvmCross.iOS.Platform;
+using MvvmCross.Platform;
 using Foundation;
 using UIKit;
 
 namespace XamarinFilesTest.iOS
 {
 	[Register("AppDelegate")]
-	public partial class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+	public partial class AppDelegate : MvxApplicationDelegate
 	{
-		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+		public override UIWindow Window { get; set; }
+
+		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
-			global::Xamarin.Forms.Forms.Init();
+			Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
-			LoadApplication(new App());
+			var setup = new Setup(this, Window);
+			setup.Initialize();
 
-			return base.FinishedLaunching(app, options);
-		}
+			var startup = Mvx.Resolve<IMvxAppStart>();
+			startup.Start();
+
+			Window.MakeKeyAndVisible();
+
+			return true;
+		} 
 	}
+	
 }
