@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFilesTest", "XamarinFilesTest.csproj", "{AF3617C0-FC92-4D70-B019-D46991848358}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFilesTest", "XamarinFilesTest\XamarinFilesTest.csproj", "{AF3617C0-FC92-4D70-B019-D46991848358}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinFilesTest.iOS", "iOS\XamarinFilesTest.iOS.csproj", "{F0EFFA67-377B-4820-B737-957C8F0AAA24}"
 EndProject
