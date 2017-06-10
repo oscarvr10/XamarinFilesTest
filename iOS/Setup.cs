@@ -5,6 +5,7 @@ using MvvmCross.iOS.Platform;
 using MvvmCross.iOS.Views.Presenters;
 using MvvmCross.Platform.Platform;
 using UIKit;
+using Xamarin.Forms;
 
 namespace XamarinFilesTest.iOS
 {
@@ -22,7 +23,7 @@ namespace XamarinFilesTest.iOS
 
         protected override IMvxApplication CreateApp()
         {
-            return new App();
+			return new XamarinFilesTest.App();
         }
         
         protected override IMvxTrace CreateDebugTrace()
@@ -32,7 +33,7 @@ namespace XamarinFilesTest.iOS
 
 		protected override IMvxIosViewPresenter CreatePresenter()
 		{
-			global::Xamarin.Forms.Forms.Init();
+			Forms.Init();
 
 			var xamarinFormsApp = new MvxFormsApplication();
 

@@ -169,7 +169,7 @@
     <Compile Include="DebugTrace.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\XamarinFilesTest.csproj">
+    <ProjectReference Include="..\XamarinFilesTest\XamarinFilesTest.csproj">
       <Project>{AF3617C0-FC92-4D70-B019-D46991848358}</Project>
       <Name>XamarinFilesTest</Name>
     </ProjectReference>
