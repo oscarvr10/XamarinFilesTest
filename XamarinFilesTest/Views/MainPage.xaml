@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+	xmlns:b="clr-namespace:Corcav.Behaviors;assembly=Corcav.Behaviors"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:converters="clr-namespace:XamarinFilesTest.Views.Converters;assembly=XamarinFilesTest"
+	x:Class="XamarinFilesTest.Views.MainPage">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+	    	<converters:InvVisibilityConverter x:Key="InvVisConverter" />
+	    </ResourceDictionary>
+	</ContentPage.Resources>
+	
+	<ContentPage.ToolbarItems >
+        <ToolbarItem Priority="0" Order="Primary" Icon="download.png" Command="{Binding GetFilesCommand}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+		<Grid>
+			<ListView x:Name="lstFiles"
+			      RowHeight="80"
+				  IsVisible="{Binding HasResults}"
+			      SeparatorVisibility="Default"
+			      ItemsSource="{Binding Files}"
+				  SelectedItem="{Binding SelectedFile}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid HorizontalOptions="FillAndExpand"
+			        		  Padding="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="6*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="5*" />
+                                <RowDefinition Height="5*" />
+                            </Grid.RowDefinitions>
+                            <Label TextColor="#f35e20"
+                                   FontSize="14"
+                                   Text="{Binding documentName}"/>
+                            <Label TextColor="#f35e20"
+                                   FontSize="14"
+                                   Text="{Binding documentUrl}"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <b:Interaction.Behaviors>
+                <b:BehaviorCollection>
+                    <b:EventToCommand EventName="ItemSelected" Command="{Binding ShowDetailDownloadCommand}" />
+	            </b:BehaviorCollection>
+	        </b:Interaction.Behaviors>
+	    </ListView>
+		<Label Text="No hay datos"
+				IsVisible="{Binding HasResults, Converter={StaticResource InvVisConverter}}"
+				VerticalOptions="Center"
+            	HorizontalOptions="Center"
+				HorizontalTextAlignment="Center"/>
+        <ActivityIndicator
+            Color="Blue"
+            IsRunning="{Binding IsLoading, Mode=TwoWay}"
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+            <ActivityIndicator.WidthRequest>
+                <OnPlatform 
+                    x:TypeArguments="x:Double" 
+                    iOS="100" 
+                    Android="100"
+                    WinPhone="400" />
+            </ActivityIndicator.WidthRequest>
+        </ActivityIndicator>
+		</Grid>
+
+    </ContentPage.Content>
+</ContentPage>
