@@ -18,13 +18,19 @@ namespace XamarinWebService.Controllers
             var listFiles = new List<File>();
             listFiles.Add(new File()
             {
-                documentName = "Doc1",
-                documentURL = "http://www.onedrive.com/file1"
+                documentName = "Arquitectura_SOA",
+                documentURL = "https://1drv.ms/b/s!AjnPnLvwh--0ggX-34NFuuM9MS56"
             });
             listFiles.Add(new File()
             {
-                documentName = "Doc1",
-                documentURL = "http://www.onedrive.com/file1"
+                documentName = "Hybrid_Apps_vs_Native_Apps",
+                documentURL = "https://1drv.ms/b/s!AjnPnLvwh--0ggobqoUsuYP-Hyds"
+            });
+
+            listFiles.Add(new File()
+            {
+                documentName = "Patrones_de_diseño",
+                documentURL = "https://1drv.ms/b/s!AjnPnLvwh--0gglpObWyTT_J8bWO"
             });
 
             return Json(listFiles);
