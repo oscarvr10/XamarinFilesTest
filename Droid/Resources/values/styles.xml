@@ -1,7 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <resources>
 	<style name="MyTheme" parent="MyTheme.Base">
-	</style>
+    <!--If you are using MasterDetailPage you will want to set these, else you can leave them out-->
+    <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    <item name="android:statusBarColor">@android:color/transparent</item>
+  </style>
 	<!-- Base theme applied no matter what API -->
 	<style name="MyTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
 	    <item name="colorPrimary">@color/primary</item>
@@ -15,7 +18,7 @@
 	</style>
 	<style name="Theme.Splash" parent="android:Theme">
 	    <item name="android:windowBackground">@drawable/splash</item>
-	    <item name="android:windowNoTitle">true</item>
+	    <item name="android:windowNoTitle">false</item>
 	</style>
 
 	<!-- the theme applied to the application or activity -->

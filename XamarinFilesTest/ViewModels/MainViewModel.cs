@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Acr.UserDialogs;
+using MvvmCross.Core.Navigation;
 using MvvmCross.Core.ViewModels;
 using XamarinFilesTest.Models;
 using XamarinFilesTest.Services.Interfaces;
@@ -12,11 +13,13 @@ namespace XamarinFilesTest.ViewModels
 	{
 		public IDataService DataService { get; set; }
 		public IUserDialogs DialogService { get; set; }
+		private readonly IMvxNavigationService NavigationService;
 
-		public MainViewModel(IDataService dataService, IUserDialogs dialogService)
+		public MainViewModel(IDataService dataService, IUserDialogs dialogService, IMvxNavigationService navigationService)
 		{
 			DialogService = dialogService;
 			DataService = dataService;
+			NavigationService = navigationService;
 		}
 
 		private MvxObservableCollection<File> files;
@@ -26,12 +29,6 @@ namespace XamarinFilesTest.ViewModels
 			set { SetProperty(ref files, value); }
 		}
 
-		private File selectedFile;
-		public File SelectedFile
-		{
-			get { return selectedFile; }
-			set { SetProperty(ref selectedFile, value);}
-		}
 		private bool isLoading;
 		public bool IsLoading
 		{
@@ -46,12 +43,6 @@ namespace XamarinFilesTest.ViewModels
 			set { SetProperty(ref hasResults, value); }
 		}
 
-
-
-		public override async void Start()
-		{
-			await GetFiles();
-		}
 
 		async Task GetFiles()
 		{
@@ -69,7 +60,7 @@ namespace XamarinFilesTest.ViewModels
 			catch (System.Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
-				DialogService.Alert("Hubo un error al descargar la lista. Intèntalo nuevamente", "Error", "Ok");
+				DialogService.Alert("Hubo un error al descargar la lista. Inténtalo nuevamente", "Error", "Ok");
 			}
 			finally 
 			{
@@ -80,13 +71,10 @@ namespace XamarinFilesTest.ViewModels
 
 		public IMvxCommand GetFilesCommand => new MvxCommand(async () => await GetFiles());
 
-		public IMvxCommand ShowDetailDownloadCommand => new MvxCommand(() =>
+		public IMvxCommand ShowDetailDownloadCommand => new MvxCommand<File>(selectedFile =>
 		{
-			if (SelectedFile != null)
-			{
-				ShowViewModel<DetailViewModel>(SelectedFile);
-				SelectedFile = null;
-			}
+			if (selectedFile != null)
+				NavigationService.Navigate<DetailViewModel,File>(selectedFile);
 		});
 	}
 

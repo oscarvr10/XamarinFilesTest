@@ -46,6 +46,7 @@
     </Compile>
     <Compile Include="Utils\DownloadProgressUtil.cs" />
     <Compile Include="Views\Converters\InvVisibilityConverter.cs" />
+    <Compile Include="Views\CustomControls\RadialProgressBar.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">
@@ -99,6 +100,7 @@
     <Folder Include="Services\Interfaces\" />
     <Folder Include="Utils\" />
     <Folder Include="Views\Converters\" />
+    <Folder Include="Views\CustomControls\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\MainPage.xaml">

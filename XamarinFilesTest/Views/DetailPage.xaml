@@ -1,5 +1,37 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="XamarinFilesTest.DetailPage">
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+	xmlns:custom="clr-namespace:XamarinFilesTest.Views.CustomControls;assembly=XamarinFilesTest"
+	Title="{Binding DetailFile.documentName, Mode=OneWay}"
+	x:Class="XamarinFilesTest.Views.DetailPage">
 	<ContentPage.Content>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="5*"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="5*" />
+			</Grid.RowDefinitions>
+			<StackLayout Grid.Row="1">
+				<Label Text="Descargando archivo..."
+					VerticalOptions="Center"
+					TextColor="Maroon"
+					HorizontalOptions="Center"/>
+			</StackLayout>
+			<StackLayout Padding="20" Grid.Row="2">
+				<ProgressBar x:Name="progressBar"
+				        Progress="0.0"
+						WidthRequest="300"
+						HeightRequest="20"/>
+			</StackLayout>
+
+			<!--<custom:RadialProgressBar
+				x:Name="MainProgressBar"
+				Indeterminate="false"
+				ProgressColor="Maroon"
+				ProgressBackgroundColor="White"
+				Grid.Row="2"
+	         	Progress="{Binding PercentDownload}"/>
+			<Button Text="Ver Archivo" VerticalOptions="EndAndExpand" Grid.Row="1"/>-->
+		</Grid>
 	</ContentPage.Content>
 </ContentPage>

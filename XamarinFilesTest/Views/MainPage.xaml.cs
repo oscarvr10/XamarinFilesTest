@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Xamarin.Forms;
+﻿using Xamarin.Forms;
+using XamarinFilesTest.ViewModels;
 
 namespace XamarinFilesTest.Views
 {

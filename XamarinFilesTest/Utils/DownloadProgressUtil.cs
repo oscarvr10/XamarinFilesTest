@@ -4,19 +4,16 @@
 	{
 		public int BytesDownloaded { get; set; }
 
-		public int Size { get; set; }
+		public int Total { get; set; }
 
-		public float PercentCompleted { get { return (float)BytesDownloaded / Size; } }
+		public double PercentCompleted { get { return (double)BytesDownloaded / Total; } }
 
-		public string Filename { get; private set; }
+		public bool IsFinished { get { return BytesDownloaded == Total; } }
 
-		public bool IsFinished { get { return BytesDownloaded == Size; } }
-
-		public DownloadProgressUtil(string fileName, int bytesDownloaded, int size)
+		public DownloadProgressUtil(int bytesDownloaded, int total)
 		{	
 			BytesDownloaded = bytesDownloaded;
-			Size = size;
-			Filename = fileName;
+			Total = total;
 		}
 	}
 }

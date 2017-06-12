@@ -2,6 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
 	xmlns:b="clr-namespace:Corcav.Behaviors;assembly=Corcav.Behaviors"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	Title="Xamarin Files Test"
+	x:Name="MainContentPage" 
 	xmlns:converters="clr-namespace:XamarinFilesTest.Views.Converters;assembly=XamarinFilesTest"
 	x:Class="XamarinFilesTest.Views.MainPage">
 
@@ -11,46 +13,56 @@
 	    </ResourceDictionary>
 	</ContentPage.Resources>
 	
-	<ContentPage.ToolbarItems >
-        <ToolbarItem Priority="0" Order="Primary" Icon="download.png" Command="{Binding GetFilesCommand}"/>
+	<ContentPage.ToolbarItems>
+        <ToolbarItem Priority="1" Order="Primary" Icon="download.png" Command="{Binding GetFilesCommand}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
 		<Grid>
 			<ListView x:Name="lstFiles"
-			      RowHeight="80"
+			      RowHeight="100"
 				  IsVisible="{Binding HasResults}"
 			      SeparatorVisibility="Default"
-			      ItemsSource="{Binding Files}"
-				  SelectedItem="{Binding SelectedFile}">
+			      ItemsSource="{Binding Files}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid HorizontalOptions="FillAndExpand"
 			        		  Padding="12">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6*" />
+                                <ColumnDefinition Width="7*" />
                                 <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="5*" />
                                 <RowDefinition Height="5*" />
                             </Grid.RowDefinitions>
-                            <Label TextColor="#f35e20"
-                                   FontSize="14"
+                            <Label TextColor="Black"
+                                   FontSize="16"
+								   Grid.Row="0"
+								   Grid.Column="0"
                                    Text="{Binding documentName}"/>
-                            <Label TextColor="#f35e20"
+                            <Label TextColor="Gray"
+							  	   Grid.Column="0"
+								   Grid.Row="1"
                                    FontSize="14"
                                    Text="{Binding documentUrl}"/>
+							<Image Source="down.png"
+							       VerticalOptions="Center"
+								   HeightRequest="60"
+							   	   WidthRequest="60"
+            					   HorizontalOptions="Center"
+								   Grid.Column="1"
+								   Grid.RowSpan="2">
+								   <Image.GestureRecognizers>
+		                                <TapGestureRecognizer Command="{Binding Path=BindingContext.ShowDetailDownloadCommand, Source={x:Reference MainContentPage}}"
+										CommandParameter="{Binding .}"/>
+		                            </Image.GestureRecognizers>
+							</Image>
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <b:Interaction.Behaviors>
-                <b:BehaviorCollection>
-                    <b:EventToCommand EventName="ItemSelected" Command="{Binding ShowDetailDownloadCommand}" />
-	            </b:BehaviorCollection>
-	        </b:Interaction.Behaviors>
-	    </ListView>
+        </ListView>
 		<Label Text="No hay datos"
 				IsVisible="{Binding HasResults, Converter={StaticResource InvVisConverter}}"
 				VerticalOptions="Center"

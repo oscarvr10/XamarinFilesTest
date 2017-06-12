@@ -7,19 +7,22 @@ using Android.Content.PM;
 using Xamarin.Forms;
 using MvvmCross.Forms.Core;
 using MvvmCross.Forms.Droid.Presenters;
-using MvvmCross.Forms.Droid;
 using Acr.UserDialogs;
+using Xamarin.Forms.Platform.Android;
 
 namespace XamarinFilesTest.Droid
 {
 [Activity(Label = "MvxFormsApplicationActivity",
 	  	  Theme = "@style/MyTheme",
+	      Icon = "@drawable/icon",
 		  ScreenOrientation = ScreenOrientation.Portrait)]
-	public class FormsApplicationActivity: MvxFormsApplicationActivity
+	public class FormsApplicationActivity: FormsAppCompatActivity
 	{
 		protected override void OnCreate(Bundle bundle)
 		{
 			base.OnCreate(bundle);
+
+			ToolbarResource = Resource.Layout.toolbar;
 
 			Forms.Init(this, bundle);
 
