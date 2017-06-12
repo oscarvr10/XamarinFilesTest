@@ -19,18 +19,18 @@ namespace XamarinWebService.Controllers
             listFiles.Add(new File()
             {
                 documentName = "Arquitectura_SOA",
-                documentURL = "https://1drv.ms/b/s!AjnPnLvwh--0ggX-34NFuuM9MS56"
+                documentURL = "https://drive.google.com/open?id=0B_l1vsi8qmsveGdCdkdINnM4LTQ"
             });
             listFiles.Add(new File()
             {
-                documentName = "Hybrid_Apps_vs_Native_Apps",
-                documentURL = "https://1drv.ms/b/s!AjnPnLvwh--0ggobqoUsuYP-Hyds"
+                documentName = "Database Management Systems 3rd Edition",
+                documentURL = "https://drive.google.com/open?id=0B9aJA_iV4kHYM2dieHZhMHhyRVE"
             });
 
             listFiles.Add(new File()
             {
                 documentName = "Patrones_de_diseño",
-                documentURL = "https://1drv.ms/b/s!AjnPnLvwh--0gglpObWyTT_J8bWO"
+                documentURL = "https://drive.google.com/open?id=0B_l1vsi8qmsvYlM3cml4UllBZVE"
             });
 
             return Json(listFiles);
