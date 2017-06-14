@@ -40,13 +40,14 @@
     <Compile Include="Services\ApiService.cs" />
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\Settings.cs" />
-    <Compile Include="ViewModels\DetailViewModel.cs" />
     <Compile Include="Views\DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\DownloadProgressUtil.cs" />
     <Compile Include="Views\Converters\InvVisibilityConverter.cs" />
     <Compile Include="Views\CustomControls\RadialProgressBar.cs" />
+    <Compile Include="Services\Interfaces\IFileService.cs" />
+    <Compile Include="ViewModels\DetailViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

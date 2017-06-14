@@ -10,6 +10,6 @@ namespace XamarinFilesTest.Services.Interfaces
 	public interface IDataService
 	{
 		Task<List<File>> GetFiles();
-		Task DownloadFileAsync(string idFile, IProgress<DownloadProgressUtil> progress, CancellationToken token);
+		Task DownloadFileAsync(string idFile, string filename, IProgress<DownloadProgressUtil> progress, CancellationToken token);
 	}
 }

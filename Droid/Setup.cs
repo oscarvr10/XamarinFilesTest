@@ -6,6 +6,9 @@ using MvvmCross.Forms.Droid;
 using MvvmCross.Forms.Droid.Presenters;
 using MvvmCross.Platform;
 using MvvmCross.Platform.Platform;
+using MvvmCross.Platform.Plugins;
+using XamarinFilesTest.Droid.Services;
+using XamarinFilesTest.Services.Interfaces;
 
 namespace XamarinFilesTest.Droid
 {
@@ -33,6 +36,12 @@ namespace XamarinFilesTest.Droid
 			Mvx.RegisterSingleton<IMvxViewPresenter>(presenter);
 
 			return presenter;
+		}
+
+		public override void LoadPlugins(IMvxPluginManager pluginManager)
+		{
+			base.LoadPlugins(pluginManager);
+			Mvx.RegisterType<IFileService, FileService>();
 		}
 	}
 }
