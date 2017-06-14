@@ -3,13 +3,21 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
 	xmlns:custom="clr-namespace:XamarinFilesTest.Views.CustomControls;assembly=XamarinFilesTest"
 	Title="{Binding DetailFile.documentName, Mode=OneWay}"
+	xmlns:converters="clr-namespace:XamarinFilesTest.Views.Converters;assembly=XamarinFilesTest"
 	x:Class="XamarinFilesTest.Views.DetailPage">
+
+	<ContentPage.Resources>
+		<ResourceDictionary>
+	    	<converters:InvVisibilityConverter x:Key="InvVisConverter" />
+	    </ResourceDictionary>
+	</ContentPage.Resources>
 	<ContentPage.Content>
 		<Grid>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="5*"/>
+				<RowDefinition Height="*"/>
 				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="5*" />
+				<RowDefinition Height="100" />
+				<RowDefinition Height="*" />
 			</Grid.RowDefinitions>
 			<StackLayout Grid.Row="1">
 				<Label Text="Descargando archivo..."
@@ -30,8 +38,14 @@
 				ProgressColor="Maroon"
 				ProgressBackgroundColor="White"
 				Grid.Row="2"
-	         	Progress="{Binding PercentDownload}"/>
-			<Button Text="Ver Archivo" VerticalOptions="EndAndExpand" Grid.Row="1"/>-->
+	         	Progress="{Binding PercentDownload}"/>-->
+			<!--<Button Text="Ver Archivo" 
+					IsEnabled="{Binding FileCreated, Converter={StaticResource InvVisConverter}}"
+					BorderColor="Blue"
+					VerticalOptions="Start"
+					HorizontalOptions="Center"
+					Command="{Binding ShowFileDownloadedCommand}"
+					Grid.Row="3"/>-->
 		</Grid>
 	</ContentPage.Content>
 </ContentPage>

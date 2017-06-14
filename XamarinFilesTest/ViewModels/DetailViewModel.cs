@@ -8,7 +8,6 @@ using Xamarin.Forms;
 using XamarinFilesTest.Models;
 using XamarinFilesTest.Services.Interfaces;
 using XamarinFilesTest.Utils;
-using XamarinFilesTest.Views;
 
 namespace XamarinFilesTest.ViewModels
 {
@@ -16,12 +15,21 @@ namespace XamarinFilesTest.ViewModels
 	{
 		public IDataService DataService { get; set; }
 		public IUserDialogs DialogService { get; set; }
+		public IFileService FileService { get; set; }
+		CancellationTokenSource ctsToken = null;
 
 		private double percentDownload;
 		public double PercentDownload
 		{
 			get { return percentDownload; }
 			set { SetProperty(ref percentDownload, value); }
+		}
+
+		private bool fileCreated;
+		public bool FileCreated
+		{
+			get { return fileCreated; }
+			set { SetProperty(ref fileCreated, value); }
 		}
 
 		private File detailFile;
@@ -31,12 +39,14 @@ namespace XamarinFilesTest.ViewModels
 			set { SetProperty(ref detailFile, value); }
 		}
 
-		CancellationTokenSource ctsToken = null;
+		public IMvxCommand ShowFileDownloadedCommand => new MvxCommand(async () => await ShowFile());
 
-		public DetailViewModel(IDataService dataService, IUserDialogs dialogService)
+
+		public DetailViewModel(IDataService dataService, IUserDialogs dialogService, IFileService fileService)
 		{
 			DataService = dataService;
 			DialogService = dialogService;
+			FileService = fileService;
 		}
 
 
@@ -44,6 +54,7 @@ namespace XamarinFilesTest.ViewModels
 		{
 			DetailFile = selectedFile;
 			DownloadFile();
+
 			return base.Initialize();
 		}
 
@@ -58,18 +69,20 @@ namespace XamarinFilesTest.ViewModels
 				progressReporter.ProgressChanged += (s, args) =>
 				{
 					PercentDownload = args.PercentCompleted;
-					MessagingCenter.Send<DetailViewModel,double>(this, nameof(PercentDownload),PercentDownload);
+					MessagingCenter.Send<DetailViewModel, double>(this, nameof(PercentDownload), PercentDownload);
 
-					Debug.WriteLine($"Porcentaje de descarga: {PercentDownload}");
+					//Debug.WriteLine($"Porcentaje de descarga: {PercentDownload * 100 }%");
 					if (args.IsFinished)
 						DialogService.Alert($"Se ha finalizado la descarga de {DetailFile.documentName}", "Éxito", "Aceptar");
 				};
-				DetailFile.documentUrl = "https://drive.google.com/open?id=0B9aJA_iV4kHYM2dieHZhMHhyRVE";
+
 				var urlArray = DetailFile.documentUrl.Split('=');
 				var idFile = urlArray[1];
 				ctsToken = new CancellationTokenSource();
+				Application.Current.Properties["documentName"] = DetailFile.documentName;
+				await DataService.DownloadFileAsync(idFile, DetailFile.documentName, progressReporter, ctsToken.Token);
 
-				await DataService.DownloadFileAsync(idFile, progressReporter, ctsToken.Token);
+
 			}
 			catch (OperationCanceledException ex)
 			{
@@ -79,23 +92,15 @@ namespace XamarinFilesTest.ViewModels
 			{
 				Debug.WriteLine(ex.Message);
 			}
-
-			/*var archivo1 = "Arquitectura_SOA  https://drive.google.com/open?id=0B_l1vsi8qmsveGdCdkdINnM4LTQ";
-			var archivo2 = "Database Management Systems 3rd Edition  https://drive.google.com/open?id=0B9aJA_iV4kHYM2dieHZhMHhyRVE";
-			var archivo3 = "Patrones_de_diseño  https://drive.google.com/open?id=0B_l1vsi8qmsvYlM3cml4UllBZVE";*/
 		}
 
-		public override void Disappeared()
+		async Task ShowFile()
 		{
-			//ctsToken.Cancel();
-			base.Disappeared();
-
-		}
-
-		public override void Disappearing()
-		{
-			//ctsToken.Cancel();
-			base.Disappearing();
+			string filename = string.Concat(Application.Current.Properties["documentName"], ".pdf");
+			string filepath = await FileService.GetPathFile(filename);
+			Debug.WriteLine("Ruta archivo: " + filepath);
+			if (!string.IsNullOrEmpty(filepath))
+				FileService.OpenDocumentFile(filepath, "application/pdf");
 		}
 
 	}

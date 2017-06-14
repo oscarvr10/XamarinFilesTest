@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="LaunchScreen.storyboard" />
@@ -167,6 +168,7 @@
     <Compile Include="Setup.cs" />
     <Compile Include="LinkerPleaseInclude.cs" />
     <Compile Include="DebugTrace.cs" />
+    <Compile Include="Services\FileService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\XamarinFilesTest\XamarinFilesTest.csproj">

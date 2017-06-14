@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -14,11 +15,14 @@ namespace XamarinFilesTest.Services
 	public class DataService: IDataService 
 	{
 		private IApiService ApiService { get; set; }
+		private IFileService FileService { get; set; }
 		public static readonly int BufferSize = 4096;
 
-		public DataService(IApiService apiService)
+		public DataService(IApiService apiService, IFileService fileService)
 		{
 			ApiService = apiService;
+			FileService = fileService;
+
 		}
 
 		public async Task<List<File>> GetFiles()
@@ -42,7 +46,7 @@ namespace XamarinFilesTest.Services
 			return result;
 		}
 
-		public async Task DownloadFileAsync(string idFile, IProgress<DownloadProgressUtil> progress, CancellationToken token)
+		public async Task DownloadFileAsync(string idFile, string filename, IProgress<DownloadProgressUtil> progress, CancellationToken token)
 		{
 			int receivedBytes = 0;
 			int totalBytes = 0;
@@ -53,9 +57,9 @@ namespace XamarinFilesTest.Services
 				using (HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result)
 				{
 					response.EnsureSuccessStatusCode();
-					totalBytes = response.Content.Headers.ContentLength.HasValue? (int)response.Content.Headers.ContentLength.Value : 0;
+					totalBytes = response.Content.Headers.ContentLength.HasValue ? (int)response.Content.Headers.ContentLength.Value : 0;
 
-					Debug.WriteLine($"Total de KB a descargar: {(totalBytes/1024)}");
+					Debug.WriteLine($"Total de KB a descargar: {(totalBytes / 1024)}");
 
 
 					bool canReport = totalBytes != 0 && progress != null;
@@ -71,18 +75,17 @@ namespace XamarinFilesTest.Services
 								await Task.Yield();
 								break;
 							}
-							else
+							//var newData = new byte[bytesRead];
+							//buffer.ToList().CopyTo(0, newData, 0, bytesRead);
+							receivedBytes += bytesRead;
+							if (canReport)
 							{
-								//var newData = new byte[bytesRead];
-								//buffer.ToList().CopyTo(0, newData, 0, bytesRead);
-								receivedBytes += bytesRead;
-								if (canReport)
-								{
-									DownloadProgressUtil args = new DownloadProgressUtil(receivedBytes, totalBytes);
-									progress.Report(args);
-								}
+								DownloadProgressUtil args = new DownloadProgressUtil(receivedBytes, totalBytes);
+								progress.Report(args);
 							}
 						}
+						//Se crea archivo a partir del Stream descargado
+						//await FileService.SaveAsync(filename, ".pdf", buffer);
 					}
 				}
 			}

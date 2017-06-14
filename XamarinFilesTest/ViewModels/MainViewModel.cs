@@ -13,7 +13,7 @@ namespace XamarinFilesTest.ViewModels
 	{
 		public IDataService DataService { get; set; }
 		public IUserDialogs DialogService { get; set; }
-		private readonly IMvxNavigationService NavigationService;
+		readonly IMvxNavigationService NavigationService;
 
 		public MainViewModel(IDataService dataService, IUserDialogs dialogService, IMvxNavigationService navigationService)
 		{
@@ -36,13 +36,20 @@ namespace XamarinFilesTest.ViewModels
 			set { SetProperty(ref isLoading, value); }
 		}
 
-		private bool hasResults = false;
+		private bool hasResults;
 		public bool HasResults
 		{
 			get { return hasResults; }
 			set { SetProperty(ref hasResults, value); }
 		}
 
+		public IMvxCommand GetFilesCommand => new MvxCommand(async () => await GetFiles());
+
+		public IMvxCommand ShowDetailDownloadCommand => new MvxCommand<File>(selectedFile =>
+		{
+			if (selectedFile != null)
+				NavigationService.Navigate<DetailViewModel, File>(selectedFile);
+		});
 
 		async Task GetFiles()
 		{
@@ -53,29 +60,19 @@ namespace XamarinFilesTest.ViewModels
 				if (result != null && result.Count > 0)
 				{
 					Files = new MvxObservableCollection<File>(result);
-					HasResults = true;	
+					HasResults = true;
 				}
-
 			}
 			catch (System.Exception ex)
 			{
 				Debug.WriteLine(ex.Message);
 				DialogService.Alert("Hubo un error al descargar la lista. Inténtalo nuevamente", "Error", "Ok");
 			}
-			finally 
+			finally
 			{
 				IsLoading = false;
 			}
-
 		}
-
-		public IMvxCommand GetFilesCommand => new MvxCommand(async () => await GetFiles());
-
-		public IMvxCommand ShowDetailDownloadCommand => new MvxCommand<File>(selectedFile =>
-		{
-			if (selectedFile != null)
-				NavigationService.Navigate<DetailViewModel,File>(selectedFile);
-		});
 	}
 
 }
