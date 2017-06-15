@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using XamarinFilesTest.Models;
@@ -46,21 +47,26 @@ namespace XamarinFilesTest.Services
 			return result;
 		}
 
-		public async Task DownloadFileAsync(string idFile, string filename, IProgress<DownloadProgressUtil> progress, CancellationToken token)
+		public async Task<bool> DownloadFileAsync(string idFile, string filename, IProgress<DownloadProgressUtil> progress, CancellationToken token)
 		{
 			int receivedBytes = 0;
 			int totalBytes = 0;
+			string result = string.Empty;
 			HttpClient client = new HttpClient();
 			try
 			{
 				var url = $"{Settings.API_GOOGLE_DRIVE}{idFile}?key={Settings.API_KEY}&alt=media";
-				using (HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).Result)
+				using (HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token).Result)
 				{
+                    if(token.IsCancellationRequested)
+						token.ThrowIfCancellationRequested();
+
+
 					response.EnsureSuccessStatusCode();
 					totalBytes = response.Content.Headers.ContentLength.HasValue ? (int)response.Content.Headers.ContentLength.Value : 0;
 
-					Debug.WriteLine($"Total de KB a descargar: {(totalBytes / 1024)}");
 
+					Debug.WriteLine($"Total de KB a descargar: {(totalBytes / 1024)}");
 
 					bool canReport = totalBytes != 0 && progress != null;
 
@@ -70,14 +76,19 @@ namespace XamarinFilesTest.Services
 						for (;;)
 						{
 							int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
-							if (bytesRead == 0 || token.IsCancellationRequested)
+
+							if (token.IsCancellationRequested)
+                            	token.ThrowIfCancellationRequested();
+							
+							if (bytesRead == 0)
 							{
 								await Task.Yield();
 								break;
 							}
-							//var newData = new byte[bytesRead];
-							//buffer.ToList().CopyTo(0, newData, 0, bytesRead);
+
 							receivedBytes += bytesRead;
+							result += Encoding.UTF8.GetString(buffer, 0, bytesRead);
+
 							if (canReport)
 							{
 								DownloadProgressUtil args = new DownloadProgressUtil(receivedBytes, totalBytes);
@@ -85,7 +96,8 @@ namespace XamarinFilesTest.Services
 							}
 						}
 						//Se crea archivo a partir del Stream descargado
-						//await FileService.SaveAsync(filename, ".pdf", buffer);
+						//await FileService.SaveAsync(filename, ".pdf", Encoding.UTF8.GetBytes(result));
+						return true;
 					}
 				}
 			}
@@ -98,6 +110,8 @@ namespace XamarinFilesTest.Services
 			{
 				Debug.WriteLine(ex.Message);
 			}
+
+			return false;
 		}
 	}
 }

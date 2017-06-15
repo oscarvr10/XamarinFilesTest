@@ -29,14 +29,14 @@ namespace XamarinFilesTest.ViewModels
 		public bool FileCreated
 		{
 			get { return fileCreated; }
-			set { SetProperty(ref fileCreated, value); }
+			set { fileCreated = value; RaisePropertyChanged(() => FileCreated); }
 		}
 
 		private File detailFile;
 		public File DetailFile
 		{
 			get { return detailFile; }
-			set { SetProperty(ref detailFile, value); }
+			set { detailFile = value; RaisePropertyChanged(() => DetailFile); }
 		}
 
 		public IMvxCommand ShowFileDownloadedCommand => new MvxCommand(async () => await ShowFile());
@@ -50,16 +50,17 @@ namespace XamarinFilesTest.ViewModels
 		}
 
 
-		public override Task Initialize(File selectedFile)
+		public override async Task Initialize(File selectedFile)
 		{
+			await Task.Delay(200);
 			DetailFile = selectedFile;
-			DownloadFile();
-
-			return base.Initialize();
+			FileCreated = false;
+			await DownloadFile();
 		}
 
 
-		async void DownloadFile()
+
+		async Task DownloadFile()
 		{
 			try
 			{
@@ -71,7 +72,7 @@ namespace XamarinFilesTest.ViewModels
 					PercentDownload = args.PercentCompleted;
 					MessagingCenter.Send<DetailViewModel, double>(this, nameof(PercentDownload), PercentDownload);
 
-					//Debug.WriteLine($"Porcentaje de descarga: {PercentDownload * 100 }%");
+					Debug.WriteLine($"Porcentaje de descarga: {PercentDownload * 100 }%");
 					if (args.IsFinished)
 						DialogService.Alert($"Se ha finalizado la descarga de {DetailFile.documentName}", "Éxito", "Aceptar");
 				};
@@ -80,8 +81,9 @@ namespace XamarinFilesTest.ViewModels
 				var idFile = urlArray[1];
 				ctsToken = new CancellationTokenSource();
 				Application.Current.Properties["documentName"] = DetailFile.documentName;
-				await DataService.DownloadFileAsync(idFile, DetailFile.documentName, progressReporter, ctsToken.Token);
 
+				var downloaded = await DataService.DownloadFileAsync(idFile, DetailFile.documentName, progressReporter, ctsToken.Token);
+				FileCreated = downloaded;
 
 			}
 			catch (OperationCanceledException ex)
