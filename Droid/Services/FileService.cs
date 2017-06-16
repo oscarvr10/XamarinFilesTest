@@ -50,7 +50,10 @@ namespace XamarinFilesTest.Droid.Services
 
 			var path = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "GoogleDriveFiles", string.Concat(filename, extension));
 			Debug.WriteLine("Ruta nuevo pdf: " + path);
-			File.WriteAllBytes(path, bytes);
+			Debug.WriteLine($"Tamaño nuevo pdf: {bytes.Length / 1024} KB");
+
+			var ms = new MemoryStream(bytes);
+			File.WriteAllBytes(path, ms.ToArray());
 
 			return ExistsAsync(filename);
 		}

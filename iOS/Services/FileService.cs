@@ -17,7 +17,7 @@ namespace XamarinFilesTest.iOS.Services
 
 		public Task<bool> ExistsAsync(string filename)
 		{
-			var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			var filePath = Path.Combine(documentsPath, filename);
 
 			return Task.Run(() => File.Exists(filePath));
@@ -26,8 +26,9 @@ namespace XamarinFilesTest.iOS.Services
 
 		public Task<string> GetPathFile(string filename)
 		{
-			var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+			var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			var filePath = Path.Combine(documentsPath, filename);
+			Debug.WriteLine($"Ruta archivo a buscar: {filePath}");
 			return Task.Run(() =>
 			{
 				return File.Exists(filePath) ? filePath : string.Empty;
@@ -39,9 +40,10 @@ namespace XamarinFilesTest.iOS.Services
 		{
 			try
 			{
-				var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-				var filePath = Path.Combine(documentsPath, string.Concat(filename));
-
+				var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+				var filePath = Path.Combine(documentsPath, string.Concat(filename, extension));
+				Debug.WriteLine("Ruta nuevo pdf: " + filePath);
+				Debug.WriteLine($"Tamaño nuevo pdf: {bytes.Length / 1024} KB");
 				File.WriteAllBytes(filePath, bytes);
 			}
 			catch (Exception ex)

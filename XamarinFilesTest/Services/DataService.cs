@@ -58,48 +58,48 @@ namespace XamarinFilesTest.Services
 				var url = $"{Settings.API_GOOGLE_DRIVE}{idFile}?key={Settings.API_KEY}&alt=media";
 				using (HttpResponseMessage response = client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, token).Result)
 				{
-                    if(token.IsCancellationRequested)
-						token.ThrowIfCancellationRequested();
-
-
 					response.EnsureSuccessStatusCode();
 					totalBytes = response.Content.Headers.ContentLength.HasValue ? (int)response.Content.Headers.ContentLength.Value : 0;
 
 
-					Debug.WriteLine($"Total de KB a descargar: {(totalBytes / 1024)}");
+					Debug.WriteLine($"Total a descargar: {totalBytes / 1024} KB");
 
 					bool canReport = totalBytes != 0 && progress != null;
 
 					using (var stream = await response.Content.ReadAsStreamAsync())
 					{
-						byte[] buffer = new byte[BufferSize];
-						for (;;)
+						using (var ms = new MemoryStream())
 						{
-							int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
-
-							if (token.IsCancellationRequested)
-                            	token.ThrowIfCancellationRequested();
-							
-							if (bytesRead == 0)
+							byte[] buffer = new byte[BufferSize];
+							for (;;)
 							{
-								await Task.Yield();
-								break;
+								if (token.IsCancellationRequested)
+									token.ThrowIfCancellationRequested();
+								int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, token);
+
+								if (bytesRead == 0)
+								{
+									await Task.Yield();
+									break;
+								}
+
+								receivedBytes += bytesRead;
+								ms.Write(buffer, 0, bytesRead);
+
+								if (canReport)
+								{
+									DownloadProgressUtil args = new DownloadProgressUtil(receivedBytes, totalBytes);
+									progress.Report(args);
+								}
 							}
 
-							receivedBytes += bytesRead;
-							result += Encoding.UTF8.GetString(buffer, 0, bytesRead);
-
-							if (canReport)
-							{
-								DownloadProgressUtil args = new DownloadProgressUtil(receivedBytes, totalBytes);
-								progress.Report(args);
-							}
+							Debug.WriteLine($"Longitud buffer: {ms.Length / 1024} KB");
+							//Se crea archivo a partir del Stream descargado
+							await FileService.SaveAsync(filename, ".pdf", ms.ToArray());
 						}
-						//Se crea archivo a partir del Stream descargado
-						//await FileService.SaveAsync(filename, ".pdf", Encoding.UTF8.GetBytes(result));
-						return true;
 					}
 				}
+				return true;
 			}
 			catch (OperationCanceledException ex)
 			{

@@ -32,13 +32,13 @@
 						HeightRequest="20"/>
 			</StackLayout>
 
-			<!--<Button Text="Ver Archivo" 
+			<Button Text="Ver Archivo" 
 					IsEnabled="{Binding FileCreated}"
 					BorderColor="Blue"
 					VerticalOptions="Start"
 					HorizontalOptions="Center"
 					Command="{Binding ShowFileDownloadedCommand}"
-					Grid.Row="3"/>-->
+					Grid.Row="3"/>
 		</Grid>
 	</ContentPage.Content>
 </ContentPage>
